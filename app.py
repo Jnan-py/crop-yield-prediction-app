@@ -114,8 +114,7 @@ def generate_plots(df):
                             title="Average Temperature Over Years (Sample 99)")
     fig_line_temp.update_xaxes(tickangle=90)
     plots["line_temp"] = fig_line_temp
-
-    # Plot 5: Pie chart for Item count (Average Crop)
+    
     count_item = df.groupby("Item")["Item"].count().reset_index(name="count")
     fig_pie = px.pie(count_item,
                      names="Item",
@@ -123,7 +122,6 @@ def generate_plots(df):
                      title="Item Distribution (Average Crop)")
     plots["pie_crop"] = fig_pie
 
-    # Plot 6: Bar plot for Count by Year
     count_year = df.groupby("Year")["Year"].count().reset_index(name="count")
     fig_bar_year = px.bar(count_year,
                           x="Year", 
@@ -132,8 +130,7 @@ def generate_plots(df):
                           labels={"count": "Count", "Year": "Year"})
     fig_bar_year.update_xaxes(tickangle=90)
     plots["bar_year_count"] = fig_bar_year
-
-    # Plot 7: Count plot for Area
+    
     count_area = df['Area'].value_counts().reset_index()
     count_area.columns = ["Area", "count"]
     fig_count_area = px.bar(count_area,
@@ -143,7 +140,6 @@ def generate_plots(df):
                             title="Count of Areas")
     plots["count_area"] = fig_count_area
 
-    # Plot 8: Bar plot for yield per country (Area)
     yield_country = df.groupby("Area")["hg/ha_yield"].sum().reset_index()
     fig_yield_country = px.bar(yield_country,
                                x="hg/ha_yield",
@@ -152,7 +148,6 @@ def generate_plots(df):
                                title="Yield per Country (hg/ha)")
     plots["bar_yield_country"] = fig_yield_country
 
-    # Plot 9: Count plot for Item (another view)
     count_item2 = df['Item'].value_counts().reset_index()
     count_item2.columns = ["Item", "count"]
     fig_count_item = px.bar(count_item2,
@@ -162,7 +157,6 @@ def generate_plots(df):
                             title="Count of Items")
     plots["count_item"] = fig_count_item
 
-    # Plot 10: Bar plot for yield per crop (Item)
     yield_crop = df.groupby("Item")["hg/ha_yield"].sum().reset_index()
     fig_yield_crop = px.bar(yield_crop,
                             x="hg/ha_yield",
@@ -174,9 +168,6 @@ def generate_plots(df):
     return plots
 
 def get_column_info():
-    """
-    Returns a dictionary with column names as keys and their descriptions as values.
-    """
     info = {
         "Area": "Geographical region or country (e.g., Albania).",
         "Item": "Type of crop or item (e.g., Maize).",
@@ -188,9 +179,6 @@ def get_column_info():
     }
     return info
 
-# ---------------------------
-# Session State Initialization
-# ---------------------------
 if "data" not in st.session_state:
     st.session_state.data = load_data()
 
@@ -205,19 +193,13 @@ if "plots" not in st.session_state:
 if "col_info" not in st.session_state:
     st.session_state.col_info = get_column_info()
 
-# ---------------------------
-# Main App: Tabs for Prediction, Visualization, and Info
-# ---------------------------
 tab_pred, tab_viz, tab_info = st.tabs(["Prediction", "Visualizations", "Info"])
 
-# ----- PREDICTION TAB -----
 with tab_pred:
     st.header("Yield Prediction")
     st.markdown("Input the details below to predict the yield (in hg/ha).")
     
-    # Use a form for the input controls
     with st.form("prediction_form"):
-        # Using two columns for better interactivity
         col1, col2 = st.columns(2)
         
         with col1:
@@ -275,12 +257,10 @@ with tab_viz:
     st.subheader("Yield per Crop")
     st.plotly_chart(st.session_state.plots["bar_yield_crop"], use_container_width=True)
 
-# ----- INFO TAB -----
 with tab_info:
     st.header("Data Column Information")
     st.markdown("Below is a description of each column in the dataset:")
     
-    # Retrieve the column information from session state and convert to a DataFrame for display.
     col_info = st.session_state.col_info
     info_df = pd.DataFrame({
         "Column": list(col_info.keys()),
