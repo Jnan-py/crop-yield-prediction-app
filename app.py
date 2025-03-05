@@ -5,9 +5,7 @@ import numpy as np
 import pickle
 import plotly.express as px
 
-
 st.set_page_config(page_title="Crop Yield Prediction App", layout="wide", initial_sidebar_state="expanded", page_icon="🌾")
-
 
 def load_data():
     df = pd.read_csv("Dataset\yield.csv")
@@ -121,7 +119,7 @@ def generate_plots(df):
                      values="count",
                      title="Item Distribution (Average Crop)")
     plots["pie_crop"] = fig_pie
-
+    
     count_year = df.groupby("Year")["Year"].count().reset_index(name="count")
     fig_bar_year = px.bar(count_year,
                           x="Year", 
@@ -130,7 +128,7 @@ def generate_plots(df):
                           labels={"count": "Count", "Year": "Year"})
     fig_bar_year.update_xaxes(tickangle=90)
     plots["bar_year_count"] = fig_bar_year
-    
+
     count_area = df['Area'].value_counts().reset_index()
     count_area.columns = ["Area", "count"]
     fig_count_area = px.bar(count_area,
@@ -139,7 +137,7 @@ def generate_plots(df):
                             orientation="h",
                             title="Count of Areas")
     plots["count_area"] = fig_count_area
-
+    
     yield_country = df.groupby("Area")["hg/ha_yield"].sum().reset_index()
     fig_yield_country = px.bar(yield_country,
                                x="hg/ha_yield",
@@ -147,7 +145,7 @@ def generate_plots(df):
                                orientation="h",
                                title="Yield per Country (hg/ha)")
     plots["bar_yield_country"] = fig_yield_country
-
+    
     count_item2 = df['Item'].value_counts().reset_index()
     count_item2.columns = ["Item", "count"]
     fig_count_item = px.bar(count_item2,
@@ -156,7 +154,7 @@ def generate_plots(df):
                             orientation="h",
                             title="Count of Items")
     plots["count_item"] = fig_count_item
-
+    
     yield_crop = df.groupby("Item")["hg/ha_yield"].sum().reset_index()
     fig_yield_crop = px.bar(yield_crop,
                             x="hg/ha_yield",
@@ -179,6 +177,7 @@ def get_column_info():
     }
     return info
 
+
 if "data" not in st.session_state:
     st.session_state.data = load_data()
 
@@ -193,13 +192,14 @@ if "plots" not in st.session_state:
 if "col_info" not in st.session_state:
     st.session_state.col_info = get_column_info()
 
+
 tab_pred, tab_viz, tab_info = st.tabs(["Prediction", "Visualizations", "Info"])
 
 with tab_pred:
     st.header("Yield Prediction")
     st.markdown("Input the details below to predict the yield (in hg/ha).")
-    
-    with st.form("prediction_form"):
+        
+    with st.form("prediction_form"):        
         col1, col2 = st.columns(2)
         
         with col1:
@@ -225,6 +225,8 @@ with tab_pred:
 
 with tab_viz:
     st.header("Data Visualizations")
+    st.write(pd.read_csv("Dataset/yield.csv"))
+    
     st.markdown("Explore various visualizations of the yield data below.")
     
     st.subheader("Missing Values Heatmap")
